@@ -1,0 +1,317 @@
+/* Reset styles */
+.pages{
+    display:none;
+}
+
+
+#InnerLoginPage * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styles */
+#InnerLoginPage {
+    background: #f5f5f5;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    #InnerLoginPage .login-image {
+        margin-right: 50px;
+    }
+
+    #InnerLoginPage .login-form {
+        max-width: 450px;
+    }
+
+@media screen and (max-width: 768px) {
+    #InnerLoginPage .container {
+        flex-direction: column;
+    }
+
+    #InnerLoginPage .login-image {
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+}
+
+/* Login image styles */
+#InnerLoginPage .login-image {
+    flex-grow: 1;
+    max-width: 400px;
+    margin-right: 10px;
+}
+
+    #InnerLoginPage .login-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+/* Login form styles */
+#InnerLoginPage .login-form {
+    flex-grow: 1;
+    max-width: 450px;
+    margin-left: 0px;
+}
+
+    #InnerLoginPage .login-form h1 {
+        font-size: 36px;
+        font-family: 'Montserrat', sans-serif;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 30px;
+        text-transform: uppercase;
+    }
+
+#InnerLoginPage .form {
+    width: 400px;
+    margin: 0 auto;
+    margin-top: 50px; /* 在原有的基础上添加了 margin-top 属性 */
+}
+
+#InnerLoginPage .form-input {
+    position: relative;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+    #InnerLoginPage .form-input label {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 18px;
+        color: #333;
+        width: 100px;
+        margin: 0 auto;
+    }
+
+    #InnerLoginPage .form-input input {
+        width: 100%;
+        padding: 10px 15px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-size: 16px;
+        color: #666;
+    }
+
+#InnerLoginPage .login-btn {
+    display: inline-block;
+    width: 300px;
+    padding: 12px 30px;
+    background: #2ecc71;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: auto;
+}
+
+    #InnerLoginPage .login-btn:hover {
+        background: #27ae60;
+        cursor: pointer;
+    }
+
+#InnerLoginPage .form-register {
+    text-align: center;
+}
+
+/* CSS 代码 */
+#mainPage .body {
+  margin: 0;
+  padding: 0;
+}
+
+#mainPage .sidebar {
+  height: 100%;
+  width: 200px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #f5f5f5;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+#mainPage .h1 {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+#mainPage .sidebar a {
+  display: block;
+  color: #141313;
+  padding: 16px;
+  text-decoration: none;
+}
+
+#mainPage .sidebar a:hover {
+  background-color: #ddd;
+}
+
+#mainPage .sidebar a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+#mainPage .content {
+  margin-left: 200px;
+  padding: 1px 16px;
+  height: 1000px;
+}
+
+#mainPage .dropdown{
+  position: absolute;
+  bottom:0;
+}
+
+/* CSS 代码 */
+#registerPage * {
+  box-sizing: border-box;
+}
+
+#registerPage {
+  font-family: 'Roboto', sans-serif;
+  background-color: #fdfdfd;
+  display: none;
+}
+
+#registerPage .container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+#registerPage h1 {
+  margin-bottom: 30px;
+}
+
+#registerPage .form-group {
+  margin-bottom: 20px;
+}
+ 
+
+#registerPage .form-code {
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+
+#registerPage label {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 5px;
+  color: #333;
+  text-align: left;
+}
+
+#registerPage input[type="text"],
+#registerPage input[type="email"],
+#registerPage input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  color: #333;
+  font-size: 16px;
+}
+
+#registerPage input[type="submit"] {
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+#registerPage input[type="submit"]:hover {
+  background-color: #3e8e41;
+}
+
+@media (min-width: 576px) {
+  #registerPage .container {
+      max-width: 500px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+  }
+  
+  #registerPage h1 {
+      margin-bottom: 30px;
+      flex-basis: 100%;
+  }
+  
+  #registerPage .form-group {
+      margin-bottom: 20px;
+      flex-basis: 100%;
+  }
+  
+  #registerPage label {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 5px;
+      color: #333;
+      text-align: left;
+      flex-basis: 100%;
+  }
+  
+  #registerPage input[type="text"],
+  #registerPage input[type="email"]
+  #registerPage input[type="password"] {
+        flex-basis: 100%;
+  }
+
+  #registerPage input[type="submit"] {
+        flex-basis: 100%;
+  }
+}
+
+/* delete CSS 代码 */
+#deletePage .container {
+  margin-top: 50px;
+}
+
+#deletePage .card {
+  margin-bottom: 20px;
+}
+
+#deletePage .card-header {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+#deletePage .card-body {
+  font-size: 1.1rem;
+  color: #6c757d;
+}
+.innerPages{
+    display:none
+}

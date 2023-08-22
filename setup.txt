@@ -1,0 +1,29 @@
+1. install sql server
+2. change sql connection string in \BeeAware\appsettings.json
+3. create tables
+
+CREATE DATABASE beeaware;
+
+CREATE TABLE users (
+	ID INT PRIMARY KEY IDENTITY (1, 1),
+	Email VARCHAR (50) NOT NULL UNIQUE,
+	Password VARCHAR (50) NOT NULL UNIQUE,
+	userGroup VARCHAR (50) NOT NULL,
+);
+
+
+CREATE TABLE modules (
+	ID INT PRIMARY KEY IDENTITY (1, 1),
+	Name VARCHAR (50) NOT NULL UNIQUE,
+	Description TEXT NOT NULL,
+	tableUse VARCHAR (50) NOT NULL,
+);
+
+
+4. manually add your files and database tables/modules
+
+5. run and see if there is any uninstalled packages
+
+6. access the app at https://localhost:7133
+
+ 
