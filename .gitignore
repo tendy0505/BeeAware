@@ -369,3 +369,26 @@ BeeAware/obj/
 # config
 *.json
 /BeeAware/bin/Debug/net6.0/BeeAware.dll
+/BeeAware/bin/Debug/net6.0/BeeAware.dll
+/BeeAware/bin/Debug/net6.0/BeeAware.exe
+/BeeAware/bin/Debug/net6.0/BeeAware.pdb
+/BeeAware/bin/Debug/net6.0/BeeAware.staticwebassets.runtime.json
+/BeeAware/obj/Debug/net6.0/ref/BeeAware.dll
+/BeeAware/obj/Debug/net6.0/refint/BeeAware.dll
+/BeeAware/obj/Debug/net6.0/staticwebassets/msbuild.BeeAware.Microsoft.AspNetCore.StaticWebAssets.props
+/BeeAware/obj/Debug/net6.0/apphost.exe
+/BeeAware/obj/Debug/net6.0/BeeAware.assets.cache
+/BeeAware/obj/Debug/net6.0/BeeAware.csproj.AssemblyReference.cache
+/BeeAware/obj/Debug/net6.0/BeeAware.csproj.CoreCompileInputs.cache
+/BeeAware/obj/Debug/net6.0/BeeAware.dll
+/BeeAware/obj/Debug/net6.0/BeeAware.genruntimeconfig.cache
+/BeeAware/obj/Debug/net6.0/BeeAware.pdb
+/BeeAware/obj/Debug/net6.0/staticwebassets.build.json
+/BeeAware/obj/project.assets.json
+/BeeAware/obj/BeeAware.csproj.nuget.dgspec.json
+/BeeAware/obj/Debug/net6.0/staticwebassets.pack.json
+/BeeAware/obj/Debug/net6.0/BeeAware.GeneratedMSBuildEditorConfig.editorconfig
+/BeeAware/obj/Debug/net6.0/staticwebassets.development.json
+/BeeAware/obj/BeeAware.csproj.nuget.g.props
+/BeeAware/obj/project.nuget.cache
+/BeeAware/obj/Debug/net6.0/BeeAware.csproj.FileListAbsolute.txt
