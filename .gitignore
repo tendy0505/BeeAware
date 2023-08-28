@@ -368,3 +368,4 @@ BeeAware/obj/
 
 # config
 *.json
+/BeeAware/bin/Debug/net6.0/BeeAware.dll
