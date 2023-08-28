@@ -366,3 +366,5 @@ FodyWeavers.xsd
 BeeAware/bin/Debug/net6.0/
 BeeAware/obj/
 
+# config
+*.json
