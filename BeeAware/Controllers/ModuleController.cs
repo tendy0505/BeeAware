@@ -14,6 +14,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using System.Security.Cryptography.Xml;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -29,6 +30,7 @@ namespace BeeAware.Controllers
         {
             _configuration = configuration;
         }
+ 
 
         [HttpGet]
         [Route("Check")]
@@ -36,7 +38,9 @@ namespace BeeAware.Controllers
         public ContentResult Check()
         {
             SqlConnection con = new SqlConnection(_configuration.GetConnectionString("BeeAwareLogin").ToString());
-            SqlCommand cmd = new SqlCommand("select * from glb_SecMod", con);
+
+            
+            SqlCommand cmd = new SqlCommand("SELECT DISTINCT glb_SecMod.Module, glb_SecMod.ModuleCode\r\nFROM glb_SecMod \r\nLEFT JOIN \r\n    ( \r\n        SELECT * \r\n\t\t FROM glb_SecUser\r\n\t\t WHERE glb_SecUser.SecUserID IN (SELECT MAX(glb_SecUser.SecUserID) FROM glb_SecUser GROUP BY glb_SecUser.SecModID, glb_SecUser.UserID)\r\n    ) AS a\r\nLEFT join glb_Users on glb_Users.UserID = a.UserID\r\non a.SecModID = glb_SecMod.ModuleCode\r\nwhere \r\n(glb_SecMod.SecurityLevel <= a.SecurityLevel and glb_Users.UserName = '"+ HttpContext.Session.GetString(SessionVariables.SessionKeyUserEmail) + "')\r\nor\r\n( a.SecurityLevel  is null and glb_SecMod.SecurityLevel<=0)\r\n", con);
             con.Open();
             SqlDataReader read = cmd.ExecuteReader();
             var result = new List<Module>(); //上一步read转化成result
@@ -44,8 +48,8 @@ namespace BeeAware.Controllers
             {
                 Module a_module = new Module
                 {
-                    _Module = read.GetString(1),
-                    ModuleCode = read.GetString(2),
+                    _Module = read.GetString(0),
+                    ModuleCode = read.GetString(1),
 
                 };
                 result.Add(a_module);
@@ -84,6 +88,7 @@ namespace BeeAware.Controllers
             con.Close();
             return new ContentResult { Content = JsonSerializer.Serialize(result), StatusCode = 200 };
         }
+        
 
 
         [HttpPost]
@@ -102,6 +107,7 @@ namespace BeeAware.Controllers
                 {
                     throw new Exception();
                 }
+                /*
                 SqlCommand cmd2 = new SqlCommand("DECLARE @cmd varchar(4000)\r\nDECLARE cmds CURSOR FOR\r\nSELECT 'drop table [' + Table_Name + ']'\r\nFROM INFORMATION_SCHEMA.TABLES\r\nWHERE Table_Name LIKE '" + module._Module + "_%'\r\n\r\nOPEN cmds\r\nWHILE 1 = 1\r\nBEGIN\r\n    FETCH cmds INTO @cmd\r\n    IF @@fetch_status != 0 BREAK\r\n    EXEC(@cmd)\r\nEND\r\nCLOSE cmds;\r\nDEALLOCATE cmds ", con);
                 con.Open();//连接数据库
                 int i2 = cmd2.ExecuteNonQuery(); //执行数据库指令
@@ -109,7 +115,7 @@ namespace BeeAware.Controllers
                 if (i <= 0)
                 {
                     throw new Exception();
-                }
+                }*/
             }
             catch
             {
