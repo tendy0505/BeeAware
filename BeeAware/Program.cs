@@ -23,7 +23,6 @@ app.UseHttpsRedirection();
 app.UseSession();
 
 app.UseFileServer();
-//app.UseSession();
 
 app.UseDefaultFiles();
 app.UseAuthorization();

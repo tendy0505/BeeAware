@@ -392,3 +392,4 @@ BeeAware/obj/
 /BeeAware/obj/BeeAware.csproj.nuget.g.props
 /BeeAware/obj/project.nuget.cache
 /BeeAware/obj/Debug/net6.0/BeeAware.csproj.FileListAbsolute.txt
+/BeeAware/appsettings.json

@@ -1,8 +1,8 @@
 
-window.onload = function(){
-    ModuleCheck();
-    ModuleList();
-    switchPage('loginPage')
+currentUser = null
+
+window.onload = function () {
+    checkLogin()
 }
 
 document.getElementById("login-form").addEventListener("submit", function (event) {
@@ -13,8 +13,34 @@ document.getElementById("register-form").addEventListener("submit", function (ev
     register(event);
 })
 
+document.getElementById("UploadModuleForm").addEventListener("submit", function (event) {
+    uploadModule(event);
+})
 
 
+function checkLogin() {
+    fetch("/api/User/checkLogin",{})
+        .then(response => {
+            response.json().then(data => {
+                if (response.status == 202) {
+                    currentUser = data
+                    switchPage('mainPage')
+                    switchInnerPage('mainInnerPage')
+                    ModuleCheck();
+                    ModuleList();
+                    return
+                } else if (response.status == 204) {
+                 
+                } else {
+                    alert("disconnected")
+                }
+            })
+        }
+        ).catch(function (err) {
+            alert("disconnected")
+        })
+    switchPage('loginPage')
+}
 
 function switchPage(name) {
     var pages = document.getElementsByClassName("pages");
@@ -39,14 +65,14 @@ function switchInnerPage(name) {
 function login(event) {
     event.preventDefault();
     event.stopImmediatePropagation();
-    var email = document.getElementById ("login-email")
-    var password = document.getElementById("login-password")
+    var email = document.getElementById ("login-email").value
+    var password = document.getElementById("login-password").value
 
     const data = JSON.stringify({
-        'id': parseInt(0),
-        "email": email.value,
-        "group": email.value,
-        "password": password.value,
+        'UserName': email,
+        "Password": password,
+        "UserPoints": 0,
+        "PostDate": "",
     })
     fetch("/api/User/login", {
         method: 'POST',
@@ -55,17 +81,19 @@ function login(event) {
         headers: new Headers({ 'content-type': 'application/ json' }),
         body: data,
     })
-        .then(function (response) {
-            if (response.status == 202) {
-                switchPage('mainPage')
-                switchInnerPage('mainInnerPage')
-
-            } else if (response.status == 404) {
-                alert("user not found");
-            } else {
-                alert ("wrong password")
-            }
-
+        .then(response => {
+            response.json().then(data => {
+                if (response.status == 202) {
+                    switchPage('mainPage')
+                    switchInnerPage('mainInnerPage')
+                    ModuleCheck();
+                    ModuleList();
+                } else if (response.status == 404) {
+                    alert("user not found");
+                } else {
+                    alert("wrong password")
+                }
+            })
         }
         ).catch(function (err) {
 
@@ -74,17 +102,13 @@ function login(event) {
 
 function register(event) {
     event.preventDefault();
-     var email = document.getElementById ("register-email")
-     var password = document.getElementById("register-password")
-    
-    
+     var email = document.getElementById ("register-email").value
+     var password = document.getElementById("register-password").value
      const data = JSON.stringify({
-         'id': parseInt(0),
- 
-         "email": email.value,
-         "group": "",
- 
-         "password": password.value,
+         'UserName': email,
+         "Password": password,
+         "UserPoints": 0,
+         "PostDate": "",
      })
      fetch("/api/User/register", {
          method: 'POST',
@@ -94,15 +118,16 @@ function register(event) {
          body: data,
      })
          .then(function (response) {
-             if (response.status == 201) {
-                 switchPage("loginPage")
-             } else {
-                
-             }
- 
+             response.json().then(data => {
+                 if (response.status == 201) {
+                     switchPage("loginPage")
+                 } else {
+                     window.alert("Failed to register")
+                 }
+             })
          }
          ).catch(function (err) {
- 
+             window.alert("Something wrong at front-end")
          })
  };
 
@@ -124,19 +149,9 @@ function ModuleCheck(){
                             innerPagesDiv.insertAdjacentHTML("beforeend", data[i]);
                             var newInnerPage = document.getElementsByClassName("innerPages")
                             console.log(newInnerPage)
-                            switchInnerPageButtons.insertAdjacentHTML("beforeend", " <a onclick=" + '"' + "switchInnerPage('" + newInnerPage[newInnerPage.length - 1].id + "')" +'"' + " >" + newInnerPage[newInnerPage.length - 1].id +"</a>")
+                            switchInnerPageButtons.insertAdjacentHTML("beforeend", " <a onclick=" + '"' + "switchInnerPage('" + newInnerPage[newInnerPage.length - 1].id + "')" + '"' + " >" + newInnerPage[newInnerPage.length - 1].getAttribute("nameonbutton") +"</a>")
                         }
-                        
-                        
-                        var scripts = document.getElementsByTagName("script")
-                        
-                        for (i = 0; i < scripts.length; i++) {
-                            const importScript = document.createElement("script")
-                            importScript.setAttribute("src", scripts[i].src);
-                            scripts[i].remove();
-                            document.head.appendChild(importScript)
-                        }
-
+           
                         var scripts = document.getElementsByTagName("script")
                         for (i = 0; i < scripts.length; i++) {
                             const importScript = document.createElement("script")
@@ -158,18 +173,18 @@ function ModuleCheck(){
 
 function ModuleList() {
     fetch("/api/Module/List", {
-       
         referer: 'about:client',
         credentials: 'same-origin',
         headers: new Headers({ 'content-type': 'application/ json' }),
     })
+
         .then(function (response) {
             if (response.status == 200) {
                 response.json()
                     .then(data => {
                         moduleList = document.getElementById("moduleList")
                         for (var i = 0; i < data.length; i++) {
-                            moduleList.insertAdjacentHTML("beforeend", "<div class= 'card' ><div class='card-header'>" + data[i].Name + "<button type = 'button' class='btn btn-danger float-end' onclick =" + '"ModuleDelete(' + "'" + data[i].Name + "'"+')"'+">Delete</button> </div><div class='card-body'>" + data[i].Description + "</div> </div> ")
+                            moduleList.insertAdjacentHTML("beforeend", "<div class= 'card' ><div class='card-header'>" + data[i].ModuleCode + "<button type = 'button' class='btn btn-danger float-end' onclick =" + '"ModuleDelete(' + "'" + data[i]._Module + "'"+')"'+">Delete</button> </div><div class='card-body'>" + data[i].Description + "</div> </div> ")
                         }
                     })
             } else {
@@ -184,12 +199,11 @@ function ModuleList() {
 
 function ModuleDelete(name) {
     const data = JSON.stringify({
-        'description': "",
-        "id": 0,
-        "name": name,
-        "tableUse": "",
+        '_Module': name,
+        "ModuleCode": "",
+        "Description": "",
+        "SecurityLevel": 0,
     })
-    console.log(data)
     fetch("/api/Module/Delete", {
         method: 'POST',
         referer: 'about:client',
@@ -198,7 +212,6 @@ function ModuleDelete(name) {
         body: data,
     })
         .then(function (response) {
-            console.log(name)
             if (response.status == 200) {
                 response.json()
                     .then( ()=> {
@@ -215,3 +228,39 @@ function ModuleDelete(name) {
 
         })
 }
+
+
+
+
+
+
+
+function uploadModule(event) {
+    event.stopImmediatePropagation();
+    event.preventDefault();
+    const formData = new FormData;
+    var file = document.getElementById("uploadFile").files[0];
+    formData.append('FileName', file.name.substr(0, file.name.lastIndexOf('.')));
+    formData.append('file', file);
+
+    fetch("/api/Upload/UploadModule", {
+        referer: 'about:client',
+        credentials: 'same-origin',
+        method: 'POST',
+        body: formData
+    })
+        .then(function (response) {
+            if (response.status == 201) {
+                response.json()
+                    .then(data => {
+                        window.alert("uploaded")
+                    })
+            } else {
+                window.alert("failed!!")
+            }
+
+        }
+        ).catch(function (err) {
+
+        })
+};

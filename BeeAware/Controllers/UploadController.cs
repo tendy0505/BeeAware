@@ -26,106 +26,101 @@ namespace WebApplication1.Controllers
             try
             {
                 
-                string path = Path.Combine("Temp/" + fileModel.FileName+".zip");
+                string zipPath = Path.Combine("Temp/" + fileModel.FileName+".zip");
+                string folderPath = Path.Combine("Temp/" + fileModel.FileName + "/");
 
-                using(Stream stream = new FileStream(path, FileMode.Create))
+
+                using (Stream stream = new FileStream(zipPath, FileMode.Create))
                 {
-                   
                     fileModel.file.CopyTo(stream);
-                } 
-                ZipFile.ExtractToDirectory("Temp/" + fileModel.FileName + ".zip", "Temp/" + fileModel.FileName +"/");
-                SqlConnection con3 = new SqlConnection(_configuration.GetConnectionString("BeeAwareLogin").ToString());
+                }
 
-                SqlCommand cmd3 = new SqlCommand("select * from modules where name = '"+ fileModel.FileName+"'", con3);
-                con3.Open();
+                ZipFile.ExtractToDirectory(zipPath, folderPath);
+                // read the file and extract
+
+                ModuleInfo? moduleInfo = JsonSerializer.Deserialize<ModuleInfo>(System.IO.File.ReadAllText(folderPath + "info.json"));
+                // read the infomation
+
+                if (moduleInfo==null||moduleInfo.Module == null||moduleInfo.ModuleCode == null || moduleInfo.Description==null || moduleInfo.SecurityLevel==null) {
+                    throw new Exception();
+                }
+                // check json
+
+                SqlConnection con = new SqlConnection(_configuration.GetConnectionString("BeeAwareLogin").ToString());
+                SqlCommand cmd3 = new SqlCommand("Select * from glb_SecMod where Module = '" + moduleInfo.Module + "'", con);
+                con.Open();
                 SqlDataReader read = cmd3.ExecuteReader();
-                var result = new List<Module>(); //上一步read转化成result
+                bool moduleExsit = false;
                 while (read.Read())
                 {
-                    var a_module = new Module
-                    {
-                        Name = read.GetString(1),
-                    };
-                    result.Add(a_module);
+                    moduleExsit = true;
                 };
                 read.Close();
-                con3.Close();
+                con.Close();
+                //check new
 
-                if (result.Count > 0)
+                if (!moduleExsit) //new
                 {
-                    //update
-                }
-                else
-                {
-                    //new
-                    string tableUse = "null";
-
-                    if (System.IO.File.Exists("Temp/" + fileModel.FileName + "/" + fileModel.FileName + ".sql"))
-                    {
-                        tableUse = fileModel.FileName;
-                       
-                    }
-                    SqlConnection con2 = new SqlConnection(_configuration.GetConnectionString("BeeAwareLogin").ToString());
-                    SqlCommand cmd2 = new SqlCommand("INSERT INTO modules (Name, Description, tableUse)VALUES('" + fileModel.FileName + "','" + System.IO.File.ReadAllText("Temp/" + fileModel.FileName + "/Description.txt") + "','" + tableUse + "');", con2);
-                    con2.Open();//连接数据库
+                
+                    SqlCommand cmd2 = new SqlCommand("INSERT INTO glb_SecMod (Module, ModuleCode, Description, SecurityLevel)VALUES('" + moduleInfo.Module + "','" + moduleInfo.ModuleCode + "','" + moduleInfo.Description + "'," + moduleInfo.SecurityLevel + ");", con);
+                    con.Open();//连接数据库
                     int i2 = cmd2.ExecuteNonQuery(); //执行数据库指令
-                    con2.Close();
+                    con.Close();
                     if (i2 <= 0)
                     {
-                        throw new Exception();
+                        throw new Exception(); //if fail
                     }
 
-                    if (System.IO.File.Exists("Temp/" + fileModel.FileName + "/" + fileModel.FileName + ".sql"))
+                    if (moduleInfo.SQL != "" && moduleInfo.SQL != null)
                     {  
-                        SqlConnection con = new SqlConnection(_configuration.GetConnectionString("BeeAwareLogin").ToString());
-                        SqlCommand cmd = new SqlCommand(System.IO.File.ReadAllText("Temp/" + fileModel.FileName + "/" + fileModel.FileName + ".sql"), con);
+                        SqlCommand cmd = new SqlCommand(moduleInfo.SQL, con);
                         con.Open();//连接数据库
                         int i = cmd.ExecuteNonQuery(); //执行数据库指令
                         con.Close();
                     }
-
-
                 }
+                // database
 
-
-                
-
-
-                if (System.IO.File.Exists("Temp/" + fileModel.FileName + "/Controllers/" + fileModel.FileName + "Controller.cs"))
+                if (Directory.Exists(folderPath + "Controllers/"))
                 {
-                    System.IO.File.Move("Temp/" + fileModel.FileName + "/Controllers/" + fileModel.FileName + "Controller.cs", "Modules/Controllers/" + fileModel.FileName + "Controllers.cs",true);
-                }
-
-
-
-                if (Directory.Exists("Temp/" + fileModel.FileName + "/Models/"))
-                {
-                    DirectoryInfo d = new DirectoryInfo("Temp/" + fileModel.FileName + "/Models/"); //Assuming Test is your Folder.
-                    FileInfo[] Files = d.GetFiles("*.cs"); //Getting Text files
-                    (new FileInfo("Modules/Models/" + fileModel.FileName + "/")).Directory.Create();
+                    DirectoryInfo d = new DirectoryInfo(folderPath + "Controllers/"); 
+                    FileInfo[] Files = d.GetFiles("*.cs"); //Getting Cs files
+                    string distFolder = "Modules/Controllers/" + moduleInfo.Module + "/";
+                    (new FileInfo(distFolder)).Directory.Create();
                     foreach (FileInfo file in Files)
                     {
-                        System.IO.File.Move("Temp/" + fileModel.FileName + "/Models/" + file.Name , "Modules/Models/"+ fileModel.FileName+"/"+file.Name, true);
+                        System.IO.File.Move(folderPath + "Controllers/" + file.Name, distFolder + file.Name, true);
                     }
-
-                } 
-                
-
-
-                
-                    
-                if (System.IO.File.Exists("Temp/" + fileModel.FileName + "/Html/" + fileModel.FileName + ".html"))
-                {
-                    System.IO.File.Move("Temp/" + fileModel.FileName + "/Html/" + fileModel.FileName + ".html", "wwwroot/Modules/Html/" + fileModel.FileName + ".html", true);
                 }
-                if (System.IO.File.Exists("Temp/" + fileModel.FileName + "/Css/" + fileModel.FileName + ".css"))
+                // put controllers (files)
+
+                if (Directory.Exists(folderPath + "Models/"))
                 {
-                    System.IO.File.Move("Temp/" + fileModel.FileName + "/Css/" + fileModel.FileName + ".css", "wwwroot/Modules/Css/" + fileModel.FileName + ".css", true);
+                    DirectoryInfo d = new DirectoryInfo(folderPath + "Models/"); 
+                    FileInfo[] Files = d.GetFiles("*.cs"); //Getting Cs files
+                    string distFolder = "Modules/Models/" + moduleInfo.Module + "/";
+                    (new FileInfo(distFolder)).Directory.Create();
+                    foreach (FileInfo file in Files)
+                    {
+                        System.IO.File.Move(folderPath + "Models/" + file.Name, distFolder + file.Name, true);
+                    }
                 }
-                if (System.IO.File.Exists("Temp/" + fileModel.FileName + "/Js/" + fileModel.FileName + ".js"))
+                // put models (files)
+
+                if (System.IO.File.Exists(folderPath + "/Html/" + moduleInfo.Module + ".html"))
                 {
-                    System.IO.File.Move("Temp/" + fileModel.FileName + "/Js/" + fileModel.FileName + ".js", "wwwroot/Modules/Js/" + fileModel.FileName + ".js", true);
+                    System.IO.File.Move(folderPath + "/Html/" + moduleInfo.Module + ".html", "wwwroot/Modules/Html/" + moduleInfo.Module + ".html", true);
                 }
+                if (System.IO.File.Exists(folderPath + "/Css/" + moduleInfo.Module + ".css"))
+                {
+                    System.IO.File.Move(folderPath + "/Css/" + moduleInfo.Module + ".css", "wwwroot/Modules/Css/" + moduleInfo.Module + ".css", true);
+                }   
+                if (System.IO.File.Exists(folderPath + "/Js/" + moduleInfo.Module + ".js"))
+                {
+                    System.IO.File.Move(folderPath + "/Js/" + moduleInfo.Module + ".js", "wwwroot/Modules/Js/" + moduleInfo.Module + ".js", true);
+                }
+                // put front-end (single file for each)
+
                 Directory.Delete("Temp/" + fileModel.FileName +"/" , true);
                 return new ContentResult { Content = JsonSerializer.Serialize("module created"), StatusCode = 201 };
             }
