@@ -28,13 +28,19 @@ namespace WebApplication1.Controllers
                 
                 string zipPath = Path.Combine("Temp/" + fileModel.FileName+".zip");
                 string folderPath = Path.Combine("Temp/" + fileModel.FileName + "/");
-
+                
 
                 using (Stream stream = new FileStream(zipPath, FileMode.Create))
                 {
                     fileModel.file.CopyTo(stream);
                 }
+                
+                if (System.IO.File.Exists(folderPath))
+                {
+                    System.IO.File.Delete(folderPath);
+                }
 
+                
                 ZipFile.ExtractToDirectory(zipPath, folderPath);
                 // read the file and extract
 
@@ -59,27 +65,6 @@ namespace WebApplication1.Controllers
                 con.Close();
                 //check new
 
-                if (!moduleExsit) //new
-                {
-                
-                    SqlCommand cmd2 = new SqlCommand("INSERT INTO glb_SecMod (Module, ModuleCode, Description, SecurityLevel)VALUES('" + moduleInfo.Module + "','" + moduleInfo.ModuleCode + "','" + moduleInfo.Description + "'," + moduleInfo.SecurityLevel + ");", con);
-                    con.Open();//连接数据库
-                    int i2 = cmd2.ExecuteNonQuery(); //执行数据库指令
-                    con.Close();
-                    if (i2 <= 0)
-                    {
-                        throw new Exception(); //if fail
-                    }
-
-                    if (moduleInfo.SQL != "" && moduleInfo.SQL != null)
-                    {  
-                        SqlCommand cmd = new SqlCommand(moduleInfo.SQL, con);
-                        con.Open();//连接数据库
-                        int i = cmd.ExecuteNonQuery(); //执行数据库指令
-                        con.Close();
-                    }
-                }
-                // database
 
                 if (Directory.Exists(folderPath + "Controllers/"))
                 {
@@ -121,7 +106,42 @@ namespace WebApplication1.Controllers
                 }
                 // put front-end (single file for each)
 
+
                 Directory.Delete("Temp/" + fileModel.FileName +"/" , true);
+
+                if (!moduleExsit) //new
+                {
+
+                    SqlCommand cmd2 = new SqlCommand("INSERT INTO glb_SecMod (Module, ModuleCode, Description, SecurityLevel)VALUES('" + moduleInfo.Module + "','" + moduleInfo.ModuleCode + "','" + moduleInfo.Description + "'," + moduleInfo.SecurityLevel + ");", con);
+                    con.Open();//连接数据库
+                    int i2 = cmd2.ExecuteNonQuery(); //执行数据库指令
+                    con.Close();
+                    if (i2 <= 0)
+                    {
+                        throw new Exception(); //if fail
+                    }
+
+
+                    if (moduleInfo.SQL != "" && moduleInfo.SQL != null)
+                    {
+                        SqlCommand cmd = new SqlCommand(moduleInfo.SQL, con);
+                        con.Open();//连接数据库
+                        int i = cmd.ExecuteNonQuery(); //执行数据库指令
+                        con.Close();
+                    }
+                }
+                else // update
+                {
+                    SqlCommand cmd2 = new SqlCommand("UPDATE [dbo].[glb_SecMod]\r\n   SET [ModuleCode] = '" + moduleInfo.ModuleCode + "'\r\n      ,[Description] = '" + moduleInfo.Description + "'\r\n      ,[SecurityLevel] = " + moduleInfo.SecurityLevel + "\r\n WHERE [Module] = '" + moduleInfo.Module + "'", con);
+                    con.Open();//连接数据库
+                    int i2 = cmd2.ExecuteNonQuery(); //执行数据库指令
+                    con.Close();
+                    if (i2 <= 0)
+                    {
+                        throw new Exception(); //if fail
+                    }
+                }
+                // database
                 return new ContentResult { Content = JsonSerializer.Serialize("module created"), StatusCode = 201 };
             }
             catch (Exception ex)

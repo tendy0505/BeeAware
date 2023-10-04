@@ -10,47 +10,98 @@
     <div id="mainPage" class="pages">
         <div class="sidebar">
             <div id="switchInnerPageButtons">
-                <a onclick="switchInnerPage('mainInnerPage')">Main Page</a>
-                <a onclick="switchInnerPage('deletePage')">Delete Page</a>
-                <a onclick="switchInnerPage('uploadPage')">Upload Page</a>
-
+                <a class="switch-link" onclick="switchInnerPage('mainInnerPage')">Main Page</a>
+                <a class="switch-link" onclick="toggleElement()">Module Template</a>
             </div>
-            <div class="dropdown">
-                <a href="#" class="d-flex align-items-center link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="btn-group dropup dropUp" id="UserTab">
+                <a role="button" class="btn btn-secondary dropdown-toggle dropUpStyle" data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="images/portrait.png" alt="" width="32" height="32" class="rounded-circle me-2">
-                    <strong>Luckyyy</strong>
+                    Luckyyy
                 </a>
-                <ul class="dropdown-menu text-small shadow">
-                    <li><a class="dropdown-item" onclick="switchPage('loginPage')">Sign out</a></li>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" onclick="switchPage('setUpPage'); switchInnerPage('uploadPage')">Set up</a></li>
+                    <li><a class="dropdown-item" onclick="logout();switchPage('loginPage'); ">Sign out</a></li>
                 </ul>
             </div>
         </div>
-        <div class="content" id="innerPagesDiv">
+        <div class="subNav">
+            <a>button 1</a>
+            <a>button 2</a>
+            <a>button 3</a>
+            <a>button 4</a>
+            <a>button 5</a>
+        </div>
+        <div class="content" id="innerPagesDiv" style="background-color: #fff3cd;">
             <h1><img src="images/Bee.png" width="100" height="100">Bee Aware Platform</h1>
             <hr />
             <div id="mainInnerPage" class="innerPages">
-                <img src="images/mainpage.png" class="w-100">
-            </div>
-            <div id="uploadPage" class="innerPages">
-                <h1>Upload file</h1>
-                <form id="UploadModuleForm">
-                    <label for="uploadFile">Choose File：</label>
-                    <input type="file" id="uploadFile" name="file">
-                    <input type="submit" value="Submit">
-                </form>
-            </div>
-            <div id="deletePage" class="innerPages">
-                <div class="container" id="moduleList">
-                    <h1 class="text-center pb-4"><img src="images/Bee.png" width="100" height="100" alt="Bee Aware Platform">Delete Plugins</h1>
+                <section class="py-5 text-center container">
+                    <h1 class="fw-light">About Platform</h1>
+                    <p class="lead text-body-secondary">Bee Aware platform is a platform that promotes the conservation of bee populations and advocates for the public to help support them. In addition, it can help the development of the Australian honey bee industry. </p>
+                    <p>
+                        <a href="#" class="btn btn-primary my-2">Test Button</a>
+                        <a href="#" class="btn btn-secondary my-2">Test Button</a>
+                    </p>
+                </section>
+                <div class="album py-5 bg-body-tertiary card">
+                    <div class="container">
+                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                            <div class="col">
+                                <div class="card shadow-sm">
+                                    <img src="images/mainPage1.jpg" width="100%" height="225">
+                                    <div class="card-body">
+                                        <p class="card-text">This is a card with information about bees.</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                            </div>
+                                            <small class="text-body-secondary">9 mins</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="card shadow-sm">
+                                    <img src="images/mainPage2.jpg" width="100%" height="225">
+                                    <div class="card-body">
+                                        <p class="card-text">This is a card with information about bees.</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                            </div>
+                                            <small class="text-body-secondary">9 mins</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card shadow-sm">
+                                    <img src="images/mainPage3.jpg" width="100%" height="225">
+                                    <div class="card-body">
+                                        <p class="card-text">This is a card with information about bees.</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                            </div>
+                                            <small class="text-body-secondary">9 mins</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 
     <div id="registerPage" class="pages">
         <div class="container">
-            <h1 style="color: rgb(8, 141, 203);">Register</h1>
+            <h1>Register</h1>
             <form id="register-form">
                 <div class="form-group1">
                     <label for="email">Email:</label>
@@ -71,7 +122,7 @@
     </div>
 
 
-    <div  id="loginPage" class="pages">
+    <div id="loginPage" class="pages">
         <div id="InnerLoginPage" class="container">
             <div class="login-image">
                 <img src="images/beelogo.png" alt="Logo">
@@ -90,7 +141,7 @@
                     <div class="form-input">
                         <button type="submit" class="login-btn">Login as user</button>
                     </div><br>
-        
+
                     <div class="form-register">
                         <p>
                             Don't have an account? <a href="javascript:void(0);" onclick="switchPage('registerPage')">Click here to register !</a>
@@ -102,10 +153,34 @@
             </div>
         </div>
     </div>
-
-
-
-
+    <div id="setUpPage" class="pages" style="background-color: #fff3cd;">
+        <div class="sidebar">
+            <div id="switchInnerPageButtons">
+                <a class="switch-link" onclick="switchInnerPage('uploadPage')">Upload Page</a>
+                <a class="switch-link" onclick="switchInnerPage('deletePage')">Delete Page</a>
+                <a class="switch-link" onclick="switchPage('mainPage'); switchInnerPage('mainInnerPage')">Return MainPage</a>
+            </div>
+        </div>
+        <div class="content" id="innerPagesDiv">
+            <h1><img src="images/Bee.png" width="100" height="100">Bee Aware Platform</h1>
+            <hr />
+            <div id="uploadPage" class="innerPages" style="text-align: center;">
+                <h1>Upload file</h1>
+                <br>
+                <form id="UploadModuleForm">
+                    <label for="uploadFile">Choose File：</label>
+                    <input type="file" id="uploadFile" name="file">
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
+            <div id="deletePage" class="innerPages">
+                <div class="container" id="moduleList">
+                    <h1 class="text-center pb-4"><img src="images/Bee.png" width="100" height="100" alt="Bee Aware Platform">Delete Plugins</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
     <script src="function.js"></script>
 </body>
 

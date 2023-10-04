@@ -2,8 +2,8 @@
 {
     public class SessionVariables
     {
-        public const string SessionKeyUserEmail = "no_user";
-        public const string SessionKeyUserGroup = "no_user";
+        public const string? SessionKeyUserEmail = "no_user";
+        public const string? SessionKeyUserGroup = "no_user";
 
 
         public enum SessionKeyEnum

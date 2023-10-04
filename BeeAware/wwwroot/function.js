@@ -3,6 +3,8 @@ currentUser = null
 
 window.onload = function () {
     checkLogin()
+    //switchPage('mainPage')
+    //switchInnerPage('mainInnerPage')
 }
 
 document.getElementById("login-form").addEventListener("submit", function (event) {
@@ -24,6 +26,7 @@ function checkLogin() {
             response.json().then(data => {
                 if (response.status == 202) {
                     currentUser = data
+                    updateUserTab(currentUser)
                     switchPage('mainPage')
                     switchInnerPage('mainInnerPage')
                     ModuleCheck();
@@ -42,7 +45,16 @@ function checkLogin() {
     switchPage('loginPage')
 }
 
+function setActiveLink(linkId) {
+    var links = document.querySelectorAll('.sidebar a');
+    links.forEach(function (link) {
+        link.classList.remove('active');
+    });
+    document.getElementById(linkId).classList.add('active');
+}
+
 function switchPage(name) {
+    setActiveLink(name);
     var pages = document.getElementsByClassName("pages");
     var shownPage = document.getElementById(name);
     for (var i = 0; i < pages.length; i++) {
@@ -52,13 +64,21 @@ function switchPage(name) {
 }
 
 function switchInnerPage(name) {
+    setActiveLink(name);
     var pages = document.getElementsByClassName("innerPages");
     var shownPage = document.getElementById(name);
     for (var i = 0; i < pages.length; i++) {
         pages[i].style.display = "none";
     }
     shownPage.style.display = "block";
+    var clickedLinks = document.querySelectorAll('.switch-link');
+    clickedLinks.forEach(function (link) {
+        link.classList.remove('active');
+    });
+    var clickedLink = document.querySelector('.switch-link[onclick="switchInnerPage(\'' + name + '\')"]');
+    clickedLink.classList.add('active');
 }
+
 
 
 
@@ -84,6 +104,8 @@ function login(event) {
         .then(response => {
             response.json().then(data => {
                 if (response.status == 202) {
+                    currentUser = data
+                    updateUserTab(currentUser)
                     switchPage('mainPage')
                     switchInnerPage('mainInnerPage')
                     ModuleCheck();
@@ -94,6 +116,22 @@ function login(event) {
                     alert("wrong password")
                 }
             })
+        }
+        ).catch(function (err) {
+
+        })
+};
+
+function logout(event) {
+
+    fetch("/api/User/logout", {
+        method: 'GET',
+        referer: 'about:client',
+        credentials: 'same-origin',
+        headers: new Headers({ 'content-type': 'application/ json' })
+    })
+        .then(response => {
+            document.getElementById("switchInnerPageButtons").innerHTML= '<a class="switch-link active" onclick="switchInnerPage(\'mainInnerPage\')">Main Page</a> <a class="switch-link" onclick="toggleElement()">Module Template</a>'
         }
         ).catch(function (err) {
 
@@ -149,11 +187,11 @@ function ModuleCheck(){
                             innerPagesDiv.insertAdjacentHTML("beforeend", data[i]);
                             var newInnerPage = document.getElementsByClassName("innerPages")
                             console.log(newInnerPage)
-                            switchInnerPageButtons.insertAdjacentHTML("beforeend", " <a onclick=" + '"' + "switchInnerPage('" + newInnerPage[newInnerPage.length - 1].id + "')" + '"' + " >" + newInnerPage[newInnerPage.length - 1].getAttribute("nameonbutton") +"</a>")
+                            switchInnerPageButtons.insertAdjacentHTML("beforeend", " <a class='switch-link' onclick=" + '"' + "switchInnerPage('" + newInnerPage[newInnerPage.length - 3].id + "')" + '"' + " >" + newInnerPage[newInnerPage.length - 3].getAttribute("nameonbutton") +"</a>")
                         }
            
                         var scripts = document.getElementsByTagName("script")
-                        for (i = 0; i < scripts.length; i++) {
+                        for (i = 0; i < scripts.length-2; i++) {
                             const importScript = document.createElement("script")
                             importScript.setAttribute("src", scripts[i].src);
                             scripts[i].remove();
@@ -264,3 +302,22 @@ function uploadModule(event) {
 
         })
 };
+
+function updateUserTab(userName) {
+    document.getElementById("UserTab").innerHTML = '<a role="button" class="btn btn-secondary dropdown-toggle dropUpStyle" data-bs-toggle="dropdown" aria-expanded="false"><img src = "images/portrait.png" alt = "" width = "32" height = "32" class="rounded-circle me-2" > ' + userName + '</a > <ul class="dropdown-menu" > <li><a class="dropdown-item" onclick="switchPage(\'setUpPage\') ; switchInnerPage(\'uploadPage\')">Set up</a></li> <li><a class="dropdown-item" onclick="switchPage(\'loginPage\');logout();">Sign out</a></li></ul > '
+}
+
+function toggleElement() {
+    var element = document.querySelector('.subNav');
+
+    if (element) {
+        var style = window.getComputedStyle(element);
+
+        if (style.display === 'none' || style.display === '') {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+}
+

@@ -95,13 +95,25 @@ namespace BeeAware.Controllers
         }
 
         [HttpGet]
+        [Route("logout")]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ContentResult logout()
+        {
+            HttpContext.Session.SetString(SessionVariables.SessionKeyUserEmail.ToString(), "no_user");
+            return new ContentResult { Content = JsonSerializer.Serialize("logged out"), StatusCode = 202 };
+            
+        }
+
+        [HttpGet]
         [Route("checkLogin")]
         [ProducesResponseType(StatusCodes.Status202Accepted)] //回传给前端的状态
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public ContentResult checkLogin()
         {
             string currentUser = HttpContext.Session.GetString(SessionVariables.SessionKeyUserEmail);
-            if (currentUser != null)
+            if (currentUser != null && currentUser != "no_user")
             {
                 return new ContentResult { Content = JsonSerializer.Serialize(currentUser), StatusCode = 202 };
             }

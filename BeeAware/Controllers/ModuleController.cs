@@ -40,7 +40,7 @@ namespace BeeAware.Controllers
             SqlConnection con = new SqlConnection(_configuration.GetConnectionString("BeeAwareLogin").ToString());
 
             
-            SqlCommand cmd = new SqlCommand("SELECT DISTINCT glb_SecMod.Module, glb_SecMod.ModuleCode\r\nFROM glb_SecMod \r\nLEFT JOIN \r\n    ( \r\n        SELECT * \r\n\t\t FROM glb_SecUser\r\n\t\t WHERE glb_SecUser.SecUserID IN (SELECT MAX(glb_SecUser.SecUserID) FROM glb_SecUser GROUP BY glb_SecUser.SecModID, glb_SecUser.UserID)\r\n    ) AS a\r\nLEFT join glb_Users on glb_Users.UserID = a.UserID\r\non a.SecModID = glb_SecMod.ModuleCode\r\nwhere \r\n(glb_SecMod.SecurityLevel <= a.SecurityLevel and glb_Users.UserName = '"+ HttpContext.Session.GetString(SessionVariables.SessionKeyUserEmail) + "')\r\nor\r\n( a.SecurityLevel  is null and glb_SecMod.SecurityLevel<=0)\r\n", con);
+            SqlCommand cmd = new SqlCommand("SELECT DISTINCT glb_SecMod.Module, glb_SecMod.ModuleCode\r\nFROM glb_SecMod \r\nLEFT JOIN \r\n    ( \r\n        SELECT * \r\n\t\t FROM glb_SecUser\r\n\t\t WHERE glb_SecUser.SecUserID IN (SELECT MAX(glb_SecUser.SecUserID) FROM glb_SecUser GROUP BY glb_SecUser.SecModID, glb_SecUser.UserID)\r\n    ) AS a\r\nLEFT join glb_Users on glb_Users.UserID = a.UserID\r\non a.SecModID = glb_SecMod.ModuleCode\r\nwhere \r\n(glb_SecMod.SecurityLevel <= a.SecurityLevel and glb_Users.UserName = '"+ HttpContext.Session.GetString(SessionVariables.SessionKeyUserEmail) + "')\r\nor\r\n( a.SecurityLevel  is null and glb_SecMod.SecurityLevel<=2)\r\n", con);
             con.Open();
             SqlDataReader read = cmd.ExecuteReader();
             var result = new List<Module>(); //上一步read转化成result
