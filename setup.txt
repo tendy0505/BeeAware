@@ -1,11 +1,13 @@
 1. install sql server
 
-2. execute the sql file named script.sql in sql server
+2. execute the sql file named script.sql in sql server to  install the database structure.
 
 3. change sql connection string in \BeeAware\appsettings.json
 
 4. run and see if there is any uninstalled packages
 
-5. access the app at https://localhost:7133
+5. build and run the program and check the connectivity between back-end and database via "register" route in swagger
+
+6. access our app at https://localhost:7133
 
  
