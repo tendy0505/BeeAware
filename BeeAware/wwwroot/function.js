@@ -25,7 +25,7 @@ function checkLogin() {
         .then(response => {
             response.json().then(data => {
                 if (response.status == 202) {
-                    currentUser = data
+                    currentUser = data[0]
                     updateUserTab(currentUser)
                     switchPage('mainPage')
                     switchInnerPage('mainInnerPage')
@@ -104,7 +104,7 @@ function login(event) {
         .then(response => {
             response.json().then(data => {
                 if (response.status == 202) {
-                    currentUser = data
+                    currentUser = data[0]
                     updateUserTab(currentUser)
                     switchPage('mainPage')
                     switchInnerPage('mainInnerPage')
@@ -131,7 +131,7 @@ function logout(event) {
         headers: new Headers({ 'content-type': 'application/ json' })
     })
         .then(response => {
-            document.getElementById("switchInnerPageButtons").innerHTML= '<a class="switch-link active" onclick="switchInnerPage(\'mainInnerPage\')">Main Page</a> <a class="switch-link" onclick="toggleElement()">Module Template</a>'
+            document.getElementById("switchInnerPageButtons").innerHTML= '<a class="switch-link active" onclick="switchInnerPage(\'mainInnerPage\')">Main Page</a> '
         }
         ).catch(function (err) {
 

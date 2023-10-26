@@ -16,12 +16,14 @@ using System.Text.Json;
 
 namespace BeeAware.Controllers
 {
+
+
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        public UserController(IConfiguration configuration)
+        public UserController(IConfiguration configuration, IHttpContextAccessor contextAccessor)
         {
             _configuration = configuration;
         }
@@ -84,11 +86,22 @@ namespace BeeAware.Controllers
 
             foreach (var a_user in result)
             {
+  
                 if (a_user.Password == user.Password) //验证密码
                 {
                     HttpContext.Session.SetString(SessionVariables.SessionKeyUserEmail.ToString(), a_user.UserName);
-                    //HttpContext.Session.SetString(SessionKeyEnum.SessionKeyUserGroup.ToString(), a_user.Group);
-                    return new ContentResult { Content = JsonSerializer.Serialize(HttpContext.Session.GetString(SessionVariables.SessionKeyUserEmail)), StatusCode = 202 };
+                    
+                    if(BeeAware_Core.IsSuperuser( con, a_user.UserName, "glb"))
+                    {
+                        HttpContext.Session.SetString(SessionVariables.SessionKeyUserGroup.ToString(), "Superuser");
+                    }
+                    else
+                    {
+                        HttpContext.Session.SetString(SessionVariables.SessionKeyUserGroup.ToString(), "User");
+
+                    }
+                    string[] returned = new string[] { HttpContext.Session.GetString(SessionVariables.SessionKeyUserEmail), HttpContext.Session.GetString(SessionVariables.SessionKeyUserGroup) };
+                    return new ContentResult { Content = JsonSerializer.Serialize(returned), StatusCode = 202 };
                 }
             }
             return new ContentResult { Content = JsonSerializer.Serialize("incorrect password"), StatusCode = 403 };
@@ -101,7 +114,7 @@ namespace BeeAware.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ContentResult logout()
         {
-            HttpContext.Session.SetString(SessionVariables.SessionKeyUserEmail.ToString(), "no_user");
+            HttpContext.Session.Clear();
             return new ContentResult { Content = JsonSerializer.Serialize("logged out"), StatusCode = 202 };
             
         }
@@ -115,7 +128,10 @@ namespace BeeAware.Controllers
             string currentUser = HttpContext.Session.GetString(SessionVariables.SessionKeyUserEmail);
             if (currentUser != null && currentUser != "no_user")
             {
-                return new ContentResult { Content = JsonSerializer.Serialize(currentUser), StatusCode = 202 };
+
+                string[] returned = new string[] { currentUser, HttpContext.Session.GetString(SessionVariables.SessionKeyUserGroup)};
+               
+                return new ContentResult { Content = JsonSerializer.Serialize(returned), StatusCode = 202 };
             }
             else
             {

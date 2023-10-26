@@ -38,8 +38,6 @@ namespace BeeAware.Controllers
         public ContentResult Check()
         {
             SqlConnection con = new SqlConnection(_configuration.GetConnectionString("BeeAwareLogin").ToString());
-
-            
             SqlCommand cmd = new SqlCommand("SELECT DISTINCT glb_SecMod.Module, glb_SecMod.ModuleCode\r\nFROM glb_SecMod \r\nLEFT JOIN \r\n    ( \r\n        SELECT * \r\n\t\t FROM glb_SecUser\r\n\t\t WHERE glb_SecUser.SecUserID IN (SELECT MAX(glb_SecUser.SecUserID) FROM glb_SecUser GROUP BY glb_SecUser.SecModID, glb_SecUser.UserID)\r\n    ) AS a\r\nLEFT join glb_Users on glb_Users.UserID = a.UserID\r\non a.SecModID = glb_SecMod.ModuleCode\r\nwhere \r\n(glb_SecMod.SecurityLevel <= a.SecurityLevel and glb_Users.UserName = '"+ HttpContext.Session.GetString(SessionVariables.SessionKeyUserEmail) + "')\r\nor\r\n( a.SecurityLevel  is null and glb_SecMod.SecurityLevel<=2)\r\n", con);
             con.Open();
             SqlDataReader read = cmd.ExecuteReader();
@@ -71,6 +69,7 @@ namespace BeeAware.Controllers
         {
             SqlConnection con = new SqlConnection(_configuration.GetConnectionString("BeeAwareLogin").ToString());
             SqlCommand cmd = new SqlCommand("select * from glb_SecMod;", con);
+            //string correctmd = "SELECT glb_SecMod.SecModID,  glb_SecMod.Module,  glb_SecMod.ModuleCode from glb_SecMod \r\n\r\nleft join \r\n( SELECT * FROM glb_SecUser WHERE glb_SecUser.SecUserID \r\nIN (SELECT MAX(glb_SecUser.SecUserID) FROM glb_SecUser GROUP BY glb_SecUser.SecModID, glb_SecUser.UserID)) AS a\r\non a.SecModID = glb_SecMod.ModuleCode\r\n\r\nLEFT join glb_Users \r\non glb_Users.UserID = a.UserID\r\nwhere (8 <= a.SecurityLevel and glb_Users.UserName = '"+ HttpContext.Session.GetString(SessionVariables.SessionKeyUserEmail) + "')";
             con.Open();
             SqlDataReader read = cmd.ExecuteReader();
             var result = new List<Module>(); //上一步read转化成result
@@ -148,6 +147,10 @@ namespace BeeAware.Controllers
             if (System.IO.File.Exists("wwwroot/Modules/Js/" + module._Module + ".js"))
             {
                 System.IO.File.Delete("wwwroot/Modules/Js/" + module._Module + ".js");
+            }
+            if (Directory.Exists("wwwroot/Modules/Images/" + module._Module + "/"))
+            {
+                Directory.Delete("wwwroot/Modules/Images/" + module._Module + "/", true);
             }
             return new ContentResult { Content = JsonSerializer.Serialize("delete success"), StatusCode = 200 };
 

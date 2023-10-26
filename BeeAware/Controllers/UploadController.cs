@@ -92,6 +92,23 @@ namespace WebApplication1.Controllers
                 }
                 // put models (files)
 
+                if (Directory.Exists(folderPath + "Images/"))
+                {
+                    DirectoryInfo d = new DirectoryInfo(folderPath + "Images/");
+                    FileInfo[] Files = d.GetFiles("*.jpg"); //Getting image files
+                    string distFolder = "wwwroot/Modules/Images/"  + moduleInfo.Module + "/";
+                    (new FileInfo(distFolder)).Directory.Create();
+                    foreach (FileInfo file in Files)
+                    {
+                        System.IO.File.Move(folderPath + "Images/" + file.Name, distFolder + file.Name, true);
+                    }
+                    FileInfo[] Files2 = d.GetFiles("*.png"); //Getting image files
+                    (new FileInfo(distFolder)).Directory.Create();
+                    foreach (FileInfo file in Files2)
+                    {
+                        System.IO.File.Move(folderPath + "Images/" + file.Name, "wwwroot/Modules/Images/" + file.Name, true);
+                    }
+                }
                 if (System.IO.File.Exists(folderPath + "/Html/" + moduleInfo.Module + ".html"))
                 {
                     System.IO.File.Move(folderPath + "/Html/" + moduleInfo.Module + ".html", "wwwroot/Modules/Html/" + moduleInfo.Module + ".html", true);

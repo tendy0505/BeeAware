@@ -13,6 +13,7 @@ namespace BeeAware.Controllers
         public TestController(IConfiguration configuration)
         {
             _configuration = configuration;
+
         }
         [HttpGet]
         [Route("TestAward")]
